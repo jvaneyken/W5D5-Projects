@@ -23,7 +23,7 @@ def harrison_ford
   # as a lead actor.
 Actor
   .joins(:movies).where("actors.name = 'Harrison Ford' AND castings.ord <> 1")
-  .select(:id)
+  .select("movies.id, movies.title")
 end
 
 def biggest_cast
@@ -40,6 +40,13 @@ def biggest_cast
   #
   # Find the id and title of the 3 movies with the largest casts (i.e., most
   # actors).
+
+  Movie
+  .joins(:castings)
+  .group('movies.id')
+  .order('COUNT(castings.actor_id) DESC')
+  .limit(3)
+  .select(:id, :title)
   
 end
 
@@ -57,6 +64,11 @@ def directed_by_one_of(them)
   # Find the id and title of all the movies directed by one of 'them'.
   
   # Note: Directors appear in the 'actors' table.
+
+  Movie
+  .joins(:director)
+  .where("actors.name = 'George Lucas' or actors.name = 'Steven Spielberg'")
+  .select(:id, :title)
 
 end
 
